@@ -19,10 +19,4 @@ public class GsonParser {
         return person;
     }
 
-    public ArrayList<HttpHelper.Response> parse1(String jsonString){
-        Gson gson = new Gson();
-        ArrayList<HttpHelper.Response> person = gson.fromJson(jsonString, new TypeToken<ArrayList<Repo>>(){}.getType());
-        return person;
-    }
-
 }
