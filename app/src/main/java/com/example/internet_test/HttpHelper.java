@@ -1,32 +1,15 @@
 package com.example.internet_test;
 
 import android.util.Log;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HttpHelper {
-    private int timeout;
+    private int timeout = 5000;
     private String path;
-    private String method;
+    private String method ;
     private String token = null;
-
-    public String getMethod() {
-        return method;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
 
     public void setMethod(String method) {
         this.method = method;
@@ -46,15 +29,15 @@ public class HttpHelper {
 
     public Response request() throws Exception {
         Response response = new Response();
-        URL url = new URL(getPath());
+        URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(getTimeout());
-        conn.setRequestMethod(getMethod());
+        conn.setConnectTimeout(timeout);
+        conn.setRequestMethod(method);
         if (method != null) {
-            conn.setRequestProperty("Authorization", "token" + " " + getToken());
+            conn.setRequestProperty("Authorization", "token" + " " + token);
         }
 
-        Log.i("suvini", "conn.getResponseCode() : " + conn.getResponseCode());
+        Log.i("suvini", "getResponseCode : " + conn.getResponseCode());
         response.setHttpCode(conn.getResponseCode());
         if (conn.getResponseCode() == 200) {
             InputStream in = conn.getInputStream();
@@ -64,6 +47,8 @@ public class HttpHelper {
           //  Log.i("suviniii", "html : " + html);
             return response;
         }
+        response.setErrorMessage(conn.getResponseMessage());
+
         return response;
     }
 

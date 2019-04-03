@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    // private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
-    String HTML_URL = "https://api.github.com/user/repos";
+     private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
+   // String HTML_URL = "https://api.github.com/user/repos";
     //    String HTML_URL1 = "https://api.github.com/users/88454/repos"; 假設有要做2件事的話 second things
-    private String token = "f58ff753523739812774e345e6fd0090de226159";
+    private String token = "96dabf928bf295bcbb71f4d942fe0156bc79b3fe";
     private String body = "{ \"message\": \"commit from h86656519\", \"content\": \"aDg2NjU2NTE5\"}";
     private String body_delete = "{ \"message\": \"delet from h86656519\",\n" + "  \"sha\": \"b2801dcb664056251439aca9fa02edf54eb847ac\"\n" + "}";
 
@@ -65,11 +65,12 @@ public class MainActivity extends AppCompatActivity {
                     httpHelper.setToken(token);
                     HttpHelper.Response request = httpHelper.request();
 
-                    Log.i("suvini", "request.getHttpCode() : " + request.getHttpCode());
-
-                    ArrayList<Repo> persons = gsonParser.parse(request.getJson());
-                    message.obj = persons;
-                    handler.sendMessage(message);
+//               不成功就不用送handler了，防呆 persons = null
+                    if (request.getHttpCode() == 200) {
+                        ArrayList<Repo> persons = gsonParser.parse(request.getJson());
+                        message.obj = persons;
+                        handler.sendMessage(message);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
