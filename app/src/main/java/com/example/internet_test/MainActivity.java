@@ -15,7 +15,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
      private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
    // String HTML_URL = "https://api.github.com/user/repos";
     //    String HTML_URL1 = "https://api.github.com/users/88454/repos"; 假設有要做2件事的話 second things
@@ -58,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
                     Message message = new Message();
                     message.what = 0x002;
                     // String personData = GetData.deletHtml(HTML_URL, body_delete, token); //刪除一筆資料
-                    HttpHelper httpHelper = new HttpHelper();
+                   // HttpHelper httpHelper = new HttpHelper();
+                    HttpHelper httpHelper =  HttpHelper.getInstance();
                     httpHelper.setPath(HTML_URL);
                     httpHelper.setMethod("GET");
                     httpHelper.setTimeout(5000);

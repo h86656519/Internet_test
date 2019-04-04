@@ -1,14 +1,22 @@
 package com.example.internet_test;
 
 import android.util.Log;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HttpHelper {
+    private static HttpHelper httpHelper = new HttpHelper();
+    public static HttpHelper getInstance() {
+        return httpHelper;
+    }
+
+    //------------------------------------------------------
+
     private int timeout = 5000;
     private String path;
-    private String method ;
+    private String method;
     private String token = null;
 
     public void setMethod(String method) {
@@ -42,9 +50,9 @@ public class HttpHelper {
         if (conn.getResponseCode() == 200) {
             InputStream in = conn.getInputStream();
             byte[] data = StreamTool.read(in);
-           // String html = new String(data, "UTF-8");
+            // String html = new String(data, "UTF-8");
             response.setJson(new String(data, "UTF-8"));
-          //  Log.i("suviniii", "html : " + html);
+            //  Log.i("suviniii", "html : " + html);
             return response;
         }
         response.setErrorMessage(conn.getResponseMessage());
