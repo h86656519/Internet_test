@@ -63,14 +63,14 @@ public class MainActivity extends AppCompatActivity {
                     httpHelper.setMethod("GET");
                     httpHelper.setTimeout(5000);
                     httpHelper.setToken(token);
-                    HttpHelper.Response request = httpHelper.request();
-
+//                    HttpHelper.Response request = httpHelper.request();
+                    httpHelper.request();
 //               不成功就不用送handler了，防呆 persons = null
-                    if (request.getHttpCode() == 200) {
-                        ArrayList<Repo> persons = gsonParser.parse(request.getJson());
-                        message.obj = persons;
-                        handler.sendMessage(message);
-                    }
+//                    if (request.getHttpCode() == 200) {
+//                        ArrayList<Repo> persons = gsonParser.parse(request.getJson());
+//                        message.obj = persons;
+//                        handler.sendMessage(message);
+//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -1,11 +1,15 @@
 package com.example.internet_test;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+//Why still need Handler, why not just use HttpListener directly?
+//What's the difference between use UrlConnection in Activity and use HttpHelper in Activity?
 public class HttpHelper {
     private static HttpHelper httpHelper = new HttpHelper();
     public static HttpHelper getInstance() {
@@ -14,6 +18,17 @@ public class HttpHelper {
 
     //------------------------------------------------------
 
+    private Response response;
+
+    public HttpListener getListener() {
+        return listener;
+    }
+
+    public void setListener(HttpListener listener) {
+        this.listener = listener;
+    }
+
+    private HttpListener listener;
     private int timeout = 5000;
     private String path;
     private String method;
@@ -35,29 +50,49 @@ public class HttpHelper {
         this.token = token;
     }
 
-    public Response request() throws Exception {
-        Response response = new Response();
-        URL url = new URL(path);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(timeout);
-        conn.setRequestMethod(method);
-        if (method != null) {
-            conn.setRequestProperty("Authorization", "token" + " " + token);
-        }
-
-        Log.i("suvini", "getResponseCode : " + conn.getResponseCode());
-        response.setHttpCode(conn.getResponseCode());
-        if (conn.getResponseCode() == 200) {
-            InputStream in = conn.getInputStream();
-            byte[] data = StreamTool.read(in);
-            // String html = new String(data, "UTF-8");
-            response.setJson(new String(data, "UTF-8"));
-            //  Log.i("suviniii", "html : " + html);
-            return response;
-        }
-        response.setErrorMessage(conn.getResponseMessage());
-
+    public Response getResponse(){
         return response;
+    }
+
+    public void request()  {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Response response = new Response();
+                    URL url = new URL(path);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(timeout);
+                    conn.setRequestMethod(method);
+                    if (method != null) {
+                        conn.setRequestProperty("Authorization", "token" + " " + token);
+                    }
+
+                    Message message = new Message();
+                    message.what = 0x03;
+
+                    Log.i("suvini", "getResponseCode : " + conn.getResponseCode());
+                    response.setHttpCode(conn.getResponseCode());
+                    if (conn.getResponseCode() == 200) {
+                        InputStream in = conn.getInputStream();
+                        byte[] data = StreamTool.read(in);
+                        // String html = new String(data, "UTF-8");
+                        response.setJson(new String(data, "UTF-8"));
+                        //  Log.i("suviniii", "html : " + html);
+
+                        message.obj = response;
+                        handler.sendMessage(message);
+                    }
+                    response.setErrorMessage(conn.getResponseMessage());
+
+                    message.obj = response;
+                    handler.sendMessage(message);
+                }catch (Exception e){
+
+                }
+            }
+        };
+//        return response;
     }
 
     class Response {
@@ -86,4 +121,24 @@ public class HttpHelper {
         }
 
     }
+
+
+   public interface HttpListener {
+        public void onSuccess(Response response);
+   }
+
+    private Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case 0x003:
+                    response = (Response) msg.obj;
+                    if(listener != null) {
+                        listener.onSuccess(response);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
