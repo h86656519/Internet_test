@@ -7,11 +7,14 @@ import android.util.Log;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //Why still need Handler, why not just use HttpListener directly?
 //What's the difference between use UrlConnection in Activity and use HttpHelper in Activity?
 public class HttpHelper {
     private static HttpHelper httpHelper = new HttpHelper();
+
     public static HttpHelper getInstance() {
         return httpHelper;
     }
@@ -50,14 +53,18 @@ public class HttpHelper {
         this.token = token;
     }
 
-    public Response getResponse(){
+    public Response getResponse() {
         return response;
     }
 
-    public void request()  {
+    // ExecutorService 負責管理 Thread
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    public void request() {
         new Thread() {
             @Override
             public void run() {
+                Log.i("suvini", "事情一:跑網路" );
                 try {
                     final Response response = new Response();
                     URL url = new URL(path);
@@ -82,16 +89,18 @@ public class HttpHelper {
 
                         message.obj = response;
                         handler.sendMessage(message);
+                    }else if(conn.getResponseCode() == 401){
+                        Log.i("suvini", "401 訪問權限不夠，確認一下token");
                     }
                     response.setErrorMessage(conn.getResponseMessage());
 
                     message.obj = response;
                     handler.sendMessage(message);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
-        };
+        }.start();
 //        return response;
     }
 
@@ -123,16 +132,16 @@ public class HttpHelper {
     }
 
 
-   public interface HttpListener {
+    public interface HttpListener {
         public void onSuccess(Response response);
-   }
+    }
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 0x003:
                     response = (Response) msg.obj;
-                    if(listener != null) {
+                    if (listener != null) {
                         listener.onSuccess(response);
                     }
                     break;
@@ -141,4 +150,9 @@ public class HttpHelper {
             }
         }
     };
+
+    public void Destroy() {
+        executorService.shutdown();
+
+    }
 }

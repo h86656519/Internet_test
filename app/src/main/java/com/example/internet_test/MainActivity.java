@@ -15,8 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-     private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
-   // String HTML_URL = "https://api.github.com/user/repos";
+    private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
+    // String HTML_URL = "https://api.github.com/user/repos";
     //    String HTML_URL1 = "https://api.github.com/users/88454/repos"; 假設有要做2件事的話 second things
     private String token = "96dabf928bf295bcbb71f4d942fe0156bc79b3fe";
     private String body = "{ \"message\": \"commit from h86656519\", \"content\": \"aDg2NjU2NTE5\"}";
@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> name_list = new ArrayList<>();
     private MyAdapter myAdapter;
     RecyclerView recyclerView;
+    HttpHelper httpHelper;
+    Animation animation = new Animation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,52 +52,61 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        httpHelper = HttpHelper.getInstance();
+        httpHelper.setPath(HTML_URL);
+        httpHelper.setMethod("GET");
+        httpHelper.setToken(token);
+        httpHelper.request(); // request() 和 runAnimate() 會同時跑
+        animation.runAnimate(); //若要確保先走 request 完後再走runAnimate，就將runAnimate 放在request 的run裡面，是比較差的作法
+//        new Thread() {
+//            public void run() {
+//                try {
+//                    Message message = new Message();
+//                    message.what = 0x002;
+//                    // String personData = GetData.deletHtml(HTML_URL, body_delete, token); //刪除一筆資料
+//                    // HttpHelper httpHelper = new HttpHelper();
+//                    httpHelper = HttpHelper.getInstance();
+//                    httpHelper.setPath(HTML_URL);
+//                    httpHelper.setMethod("GET");
+//                    httpHelper.setTimeout(5000);
+//                    httpHelper.setToken(token);
+////                    HttpHelper.Response request = httpHelper.request();
+//                    httpHelper.request();
+//                    httpHelper.request(); // request() 和 runAnimate() 會同時跑
+//                    animation.runAnimate(); //若要確保先走 request 完後再走runAnimate，就將runAnimate 放在request 的run裡面，是比較差的作法
+//
+////               不成功就不用送handler了，防呆 persons = null
+////                    if (request.getHttpCode() == 200) {
+////                        ArrayList<Repo> persons = gsonParser.parse(request.getJson());
+////                        message.obj = persons;
+////                        handler.sendMessage(message);
+////                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
+//    }
 
-        new Thread() {
-            public void run() {
-                try {
-                    Message message = new Message();
-                    message.what = 0x002;
-                    // String personData = GetData.deletHtml(HTML_URL, body_delete, token); //刪除一筆資料
-                   // HttpHelper httpHelper = new HttpHelper();
-                    HttpHelper httpHelper =  HttpHelper.getInstance();
-                    httpHelper.setPath(HTML_URL);
-                    httpHelper.setMethod("GET");
-                    httpHelper.setTimeout(5000);
-                    httpHelper.setToken(token);
-//                    HttpHelper.Response request = httpHelper.request();
-                    httpHelper.request();
-//               不成功就不用送handler了，防呆 persons = null
-//                    if (request.getHttpCode() == 200) {
-//                        ArrayList<Repo> persons = gsonParser.parse(request.getJson());
-//                        message.obj = persons;
-//                        handler.sendMessage(message);
-//                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
+//    private Handler handler = new Handler() {
+////        public void handleMessage(android.os.Message msg) {
+////            switch (msg.what) {
+////                case 0x002:
+////                    ArrayList<Repo> persons = (ArrayList<Repo>) msg.obj;
+////                    for (int i = 0; i < persons.size(); i++) {
+////                        name_list.add(persons.get(i).getName());
+////                    }
+////
+////                    Toast.makeText(MainActivity.this, "HTML代码加载完毕", Toast.LENGTH_SHORT).show();
+////                    break;
+////                default:
+////                    break;
+////            }
+////        }
+////    };
 
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case 0x002:
-                    ArrayList<Repo> persons = (ArrayList<Repo>) msg.obj;
-                    for (int i = 0; i < persons.size(); i++) {
-                        name_list.add(persons.get(i).getName());
-                    }
 
-                    Toast.makeText(MainActivity.this, "HTML代码加载完毕", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    //        new Thread() {
+        //        new Thread() {
 //            public void run() {
 //                try {
 //                    Message message = new Message();
@@ -190,4 +201,12 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }.start();
 //    }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        httpHelper.Destroy();
+        animation.Destroy();
+    }
 }
