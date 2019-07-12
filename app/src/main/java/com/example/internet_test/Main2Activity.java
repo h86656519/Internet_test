@@ -8,11 +8,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main2Activity extends AppCompatActivity {
     TextView textView;
     int code;
-
+    List<String> urls;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +44,7 @@ public class Main2Activity extends AppCompatActivity {
                 textView.setText(response.getJson());
             }
         });
-        httpHelper.request();
+        httpHelper.requestSequence(urls);
 
     }
 

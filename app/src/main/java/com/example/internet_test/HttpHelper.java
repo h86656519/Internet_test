@@ -7,12 +7,15 @@ import android.util.Log;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 //Why still need Handler, why not just use HttpListener directly?
 //What's the difference between use UrlConnection in Activity and use HttpHelper in Activity?
 public class HttpHelper {
+    Runnable thread;
     private static HttpHelper httpHelper = new HttpHelper();
 
     public static HttpHelper getInstance() {
@@ -60,8 +63,22 @@ public class HttpHelper {
     // ExecutorService 負責管理 Thread
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    public void requestSequence(List<String> urls) {
+        for (int i = 0; i < urls.size(); i++) {
+            String url = urls.get(i);
+
+            httpHelper.setListener(new HttpListener() {
+                @Override
+                public void onSuccess(Response response) {
+                    listener.onSuccess(new Response());
+                }
+            });
+            executorService.execute(thread);
+        }
+    }
+
     public void request() {
-        new Thread() {
+         thread = new Runnable() {
             @Override
             public void run() {
                 Log.i("suvini", "事情一:跑網路" );
@@ -100,8 +117,8 @@ public class HttpHelper {
 
                 }
             }
-        }.start();
-//        return response;
+        };
+        executorService.execute(thread);
     }
 
     class Response {

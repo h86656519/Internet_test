@@ -15,10 +15,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
-    // String HTML_URL = "https://api.github.com/user/repos";
+   // private String HTML_URL = "https://api.github.com/repos/h86656519/Showgithub/contents/6.txt";
+     String HTML_URL = "https://api.github.com/user/repos";
     //    String HTML_URL1 = "https://api.github.com/users/88454/repos"; 假設有要做2件事的話 second things
-    private String token = "96dabf928bf295bcbb71f4d942fe0156bc79b3fe";
+    private String token = "01ec49968820b8542ab04e12de0fc3950fb358cb ";
     private String body = "{ \"message\": \"commit from h86656519\", \"content\": \"aDg2NjU2NTE5\"}";
     private String body_delete = "{ \"message\": \"delet from h86656519\",\n" + "  \"sha\": \"b2801dcb664056251439aca9fa02edf54eb847ac\"\n" + "}";
 
@@ -48,16 +48,18 @@ public class MainActivity extends AppCompatActivity {
             Log.i("suvini", "有網路");
         }
 
-        myAdapter = new MyAdapter(this);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
         httpHelper = HttpHelper.getInstance();
         httpHelper.setPath(HTML_URL);
         httpHelper.setMethod("GET");
         httpHelper.setToken(token);
         httpHelper.request(); // request() 和 runAnimate() 會同時跑
-        animation.runAnimate(); //若要確保先走 request 完後再走runAnimate，就將runAnimate 放在request 的run裡面，是比較差的作法
+      //  animation.runAnimate(); //若要確保先走 request 完後再走runAnimate，就將runAnimate 放在request 的run裡面，是比較差的作法
+
+
+        myAdapter = new MyAdapter(this);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
 //        new Thread() {
 //            public void run() {
 //                try {
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 ////    };
 
 
-        //        new Thread() {
+//        new Thread() {
 //            public void run() {
 //                try {
 //                    Message message = new Message();
@@ -201,12 +203,12 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }.start();
 //    }
-    }
+        }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        httpHelper.Destroy();
-        animation.Destroy();
+        @Override
+        protected void onDestroy () {
+            super.onDestroy();
+            httpHelper.Destroy();
+            animation.Destroy();
+        }
     }
-}

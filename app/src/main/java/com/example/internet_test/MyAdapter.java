@@ -32,7 +32,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(MyAdapter.ViewHolder holder, final int position) {
         String name = name_list.get(position);
         holder.name_holder.setText(name);
-        Log.i(TAG, "onBindViewHolder" );
 
     }
 
