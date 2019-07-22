@@ -14,30 +14,16 @@ public class Main2Activity extends AppCompatActivity {
     TextView textView;
     int code;
     List<String> urls;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         textView = findViewById(R.id.textview_main2);
+        urls.add("http://demo.kidtech.com.tw/files/appexam/appexam1.htm");
+        urls.add("http://demo.kidtech.com.tw/files/appexam/appexam2.htm");
 
-//        new Thread() {
-//            public void run() {
-//                try {
-//                    HttpHelper httpHelper = HttpHelper.getInstance();
-//                    HttpHelper.Response response = httpHelper.request();
-//                    Message message = new Message();
-//                    message.what = 0x003;
-//                    code = response.getHttpCode();
-//                    message.obj = code;
-//                    handler.sendMessage(message);
-//                } catch (
-//                        Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-        HttpHelper httpHelper = HttpHelper.getInstance();
-        //like OnClickListener
+        HttpHelper httpHelper = HttpHelperFactory.getInstance();
         httpHelper.setListener(new HttpHelper.HttpListener() {
             @Override
             public void onSuccess(HttpHelper.Response response) {
@@ -47,17 +33,4 @@ public class Main2Activity extends AppCompatActivity {
         httpHelper.requestSequence(urls);
 
     }
-
-//    private Handler handler = new Handler() {
-//        public void handleMessage(android.os.Message msg) {
-//            switch (msg.what) {
-//                case 0x003:
-//                    int code1 = (Integer) msg.obj;
-//                    textView.setText(code1);
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    };
 }

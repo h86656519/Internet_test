@@ -14,9 +14,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
      ArrayList<String> name_list = new ArrayList<>();
     private final String TAG = "MyAdapter";
 
-    public MyAdapter(Context context) {
-
-    }
+    public MyAdapter(Context context) { }
 
     public void setNames(ArrayList<String> nameslist) {
         name_list = nameslist;

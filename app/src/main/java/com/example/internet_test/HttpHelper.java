@@ -16,13 +16,6 @@ import java.util.concurrent.Executors;
 //What's the difference between use UrlConnection in Activity and use HttpHelper in Activity?
 public class HttpHelper {
     Runnable thread;
-    private static HttpHelper httpHelper = new HttpHelper();
-
-    public static HttpHelper getInstance() {
-        return httpHelper;
-    }
-
-    //------------------------------------------------------
 
     private Response response;
 
@@ -36,7 +29,6 @@ public class HttpHelper {
 
     private HttpListener listener;
     private int timeout = 5000;
-    private String path;
     private String method;
     private String token = null;
 
@@ -48,10 +40,6 @@ public class HttpHelper {
         this.timeout = timeout;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public void setToken(String token) {
         this.token = token;
     }
@@ -60,24 +48,24 @@ public class HttpHelper {
         return response;
     }
 
+    public void setRequestParellal(boolean isParallel) { //要不要同步request
+        this.isParallel = isParallel;
+    }
+
+    private boolean isParallel = false;
+
     // ExecutorService 負責管理 Thread
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService multiexecutorService = Executors.newFixedThreadPool(4); //同時
 
     public void requestSequence(List<String> urls) {
         for (int i = 0; i < urls.size(); i++) {
             String url = urls.get(i);
-
-            httpHelper.setListener(new HttpListener() {
-                @Override
-                public void onSuccess(Response response) {
-                    listener.onSuccess(new Response());
-                }
-            });
-            executorService.execute(thread);
+            request(url);
         }
     }
 
-    public void request() {
+    public void request(final String path) {
          thread = new Runnable() {
             @Override
             public void run() {
@@ -110,7 +98,6 @@ public class HttpHelper {
                         Log.i("suvini", "401 訪問權限不夠，確認一下token");
                     }
                     response.setErrorMessage(conn.getResponseMessage());
-
                     message.obj = response;
                     handler.sendMessage(message);
                 } catch (Exception e) {
@@ -118,7 +105,12 @@ public class HttpHelper {
                 }
             }
         };
-        executorService.execute(thread);
+
+         if(isParallel){
+             multiexecutorService.execute(thread);
+         }else{
+             executorService.execute(thread);
+         }
     }
 
     class Response {
