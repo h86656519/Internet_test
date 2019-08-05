@@ -52,6 +52,6 @@ public class GithubRepo {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("id : ").append(getId()).append(", name : ").append(getName()).append(", node_id : ").append(getNodeId()).append(", full_name :").append(getfull_name()).toString();
+        return new StringBuilder().append("id : ").append(getId()).append(",name : ").append(getName()).append(",node_id : ").append(getNodeId()).append(",full_name :").append(getfull_name()).toString();
     }
 }
