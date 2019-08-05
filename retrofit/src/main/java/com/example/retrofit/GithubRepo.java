@@ -1,10 +1,22 @@
 package com.example.retrofit;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class GithubRepo {
-    public String id = "";
-    public String name = "";
-    public String node_id = "";
-    public String full_name = ""; //用gson 變數不能亂取，要跟資料一樣
+    @SerializedName("id")
+    @Expose
+    private String id = "";
+    @SerializedName("name")
+    @Expose
+    private String name = "";
+    @SerializedName("node_id")
+    @Expose
+    private String node_id = "";
+
+    @SerializedName("full_name")
+    @Expose
+    private String full_name = ""; //用gson 變數不能亂取，要跟資料一樣
 
     public void setfull_name(String full_name) {
         this.full_name = full_name;
@@ -40,6 +52,6 @@ public class GithubRepo {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("id:").append(getName()).append(", name:").append(", node_id:").append(getfull_name()).toString();
+        return new StringBuilder().append("id : ").append(getId()).append(", name : ").append(getName()).append(", node_id : ").append(getNodeId()).append(", full_name :").append(getfull_name()).toString();
     }
 }
