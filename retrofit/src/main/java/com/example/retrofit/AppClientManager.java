@@ -11,15 +11,16 @@ public class AppClientManager {
     private Retrofit retrofit;
     private OkHttpClient okHttpClient;
 
+    //設定 init
     private AppClientManager() {
         okHttpClient = new OkHttpClient();
-        //設定 init
         retrofit = new Retrofit.Builder()
-                .baseUrl(Config.mygitHubURL)
+                .baseUrl(Config.inputgitHubURL)
 //                .baseUrl(Config.jsonURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
+
     }
 
     public static Retrofit getClient() {

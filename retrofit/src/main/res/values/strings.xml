@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Retrofit</string>
+    <string name="account">帳號 : </string>
 </resources>

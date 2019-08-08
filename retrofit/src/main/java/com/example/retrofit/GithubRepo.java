@@ -47,7 +47,7 @@ public class GithubRepo {
         return id;
     }
 
-    public String getfull_name() {
+    public String getFull_name() {
         return full_name;
     }
 
@@ -60,7 +60,7 @@ public class GithubRepo {
     }
     @Override
     public String toString() {
-       return new StringBuilder().append("id : ").append(getId()).append(",name : ").append(getName()).append(",node_id : ").append(getNodeId()).append(",full_name :").append(getfull_name()).append("\n").append("Owner : ").append(getOwner()).toString();
+       return new StringBuilder().append("id : ").append(getId()).append(",name : ").append(getName()).append(",node_id : ").append(getNodeId()).append(",full_name :").append(getFull_name()).append("\n").append("Owner : ").append(getOwner()).toString();
       //  return new StringBuilder().append("Owner : ").append(getOwner()).toString();
     }
 }
