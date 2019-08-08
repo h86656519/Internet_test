@@ -15,8 +15,7 @@ public class AppClientManager {
     private AppClientManager() {
         okHttpClient = new OkHttpClient();
         retrofit = new Retrofit.Builder()
-                .baseUrl(Config.inputgitHubURL)
-//                .baseUrl(Config.jsonURL)
+                .baseUrl(Config.postURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();

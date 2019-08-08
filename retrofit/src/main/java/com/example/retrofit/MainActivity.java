@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
                         && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     account = api_ed.getText().toString();
                     Log.i("event", "captured");
-                    requestgithub();
+                    //     requestgithub();
+                    DynamicRequestGithubByhPost();
                     return false;
                 }
                 return false;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 nodeId_tv.setText("node id : " + response.body().get(0).getNodeId());
                 name_tv.setText("name : " + response.body().get(0).getName());
                 fullNmae_tv.setText("full name : " + response.body().get(0).getFull_name());
-             //   InsideObject owner = response.body().get(0).getOwner();
+                //   InsideObject owner = response.body().get(0).getOwner();
 //                Log.i(TAG, "owner.getNode_id : " + owner.getNode_id());
 
             }
@@ -85,5 +86,23 @@ public class MainActivity extends AppCompatActivity {
         nodeId_tv = findViewById(R.id.node_id);
         name_tv = findViewById(R.id.name);
         fullNmae_tv = findViewById(R.id.full_name);
+    }
+
+    public void DynamicRequestGithubByhPost() {
+        PostApi postApi = AppClientManager.getClient().create(PostApi.class);
+        postApi.getDynamicGithubByhPost(account, "12e1789a8e6a56e1bbd53750278c7cfb53a5d446", "issue001").enqueue(new Callback<List<GithubRepo>>() {
+            @Override
+            public void onResponse(Call<List<GithubRepo>> call, Response<List<GithubRepo>> response) {
+                Log.i(TAG, "response " + response.code());
+                Log.i(TAG, "response " + response.message());
+                Log.i(TAG, "response " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<GithubRepo>> call, Throwable t) {
+                Log.i(TAG, "onFailure");
+            }
+
+        });
     }
 }

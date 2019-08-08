@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class GithubRepo {
     @SerializedName("id") //gson 是透過這個去取得資料
-    @Expose
+    @Expose //Expose是用來聲明類成員是否需要進行JSON 的序列化或反序列化
     private String id = "";
 
     @SerializedName("name")
