@@ -24,13 +24,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
         api_ed.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN
-                        && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) { //按下ENTER 的動作
                     account = api_ed.getText().toString();
                     Log.i("event", "captured");
                     //     requestgithub();
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         });
         //requestjsonArray();
     }
+
 
     public void requestgithub() {
         PostApi postApi = AppClientManager.getClient().create(PostApi.class);
@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<List<GithubRepo>> call, Throwable t) {
                 Log.i(TAG, "onFailure");
             }
-
         });
     }
 
+    //用GET請求一個object，將內容抓下來
     public void requestjsonArray() {
         PostApi postApi = AppClientManager.getClient().create(PostApi.class);
         postApi.getJsonArray().enqueue(new Callback<Repo>() {
@@ -88,21 +88,22 @@ public class MainActivity extends AppCompatActivity {
         fullNmae_tv = findViewById(R.id.full_name);
     }
 
+    //    目標:在一個githubg 上的專案裡增加一條Comment
     public void DynamicRequestGithubByhPost() {
         PostApi postApi = AppClientManager.getClient().create(PostApi.class);
-        postApi.getDynamicGithubByhPost(account, "12e1789a8e6a56e1bbd53750278c7cfb53a5d446", "issue001").enqueue(new Callback<List<GithubRepo>>() {
+        postApi.getDynamicGithubByhPost(account,
+                new Comment("Comment內容寫在這邊")).enqueue(new Callback<GithubRepo>() {
             @Override
-            public void onResponse(Call<List<GithubRepo>> call, Response<List<GithubRepo>> response) {
+            public void onResponse(Call<GithubRepo> call, Response<GithubRepo> response) {
                 Log.i(TAG, "response " + response.code());
                 Log.i(TAG, "response " + response.message());
                 Log.i(TAG, "response " + response.body());
             }
 
             @Override
-            public void onFailure(Call<List<GithubRepo>> call, Throwable t) {
-                Log.i(TAG, "onFailure");
+            public void onFailure(Call<GithubRepo> call, Throwable t) {
+                Log.e(TAG, "onFailure", t);
             }
-
         });
     }
 }
