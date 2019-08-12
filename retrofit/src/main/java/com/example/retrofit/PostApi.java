@@ -27,7 +27,6 @@ public interface PostApi {
     @GET("appexam1.htm")
     Call<Repo> getJsonArray();
 
-
     @POST("{user_id}/Internet_test/issues/1/comments")
     @Headers({"Authorization: token ae10c2bdf77f47ed95034fdf275e715bd573e938", //用post 的寫法1，寫法2在 AppClientManager
             "Content-Type: application/json"})
