@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
                     account = api_ed.getText().toString();
                     Log.i("event", "captured");
                     //     requestgithub();
-                    DynamicRequestGithubByhPost();
+//                    DynamicRequestGithubByhPost();
+                    dynamicUpdatedGithubByhPatch();
+//                    dynamicdeleteGithubByhPatch();
                     return false;
                 }
                 return false;
@@ -92,10 +94,47 @@ public class MainActivity extends AppCompatActivity {
     public void DynamicRequestGithubByhPost() {
         PostApi postApi = AppClientManager.getClient().create(PostApi.class);
         postApi.getDynamicGithubByhPost(account,
-                new Comment("Comment內容寫在這邊")).enqueue(new Callback<GithubRepo>() {
+                new Comment("新增Comment內容寫在這邊")).enqueue(new Callback<GithubRepo>() {
             @Override
             public void onResponse(Call<GithubRepo> call, Response<GithubRepo> response) {
                 Log.i(TAG, "response " + response.code());
+                Log.i(TAG, "response " + response.message());
+                Log.i(TAG, "response " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<GithubRepo> call, Throwable t) {
+                Log.e(TAG, "onFailure", t);
+            }
+        });
+    }
+
+    //    修改專案中issunt裡的comment
+    public void dynamicUpdatedGithubByhPatch() {
+        PostApi postApi = AppClientManager.getClient().create(PostApi.class);
+        postApi.UpdatedGithubByhPatch(account,
+                new Comment("在android上 用PATCH 來更新內容")).enqueue(new Callback<GithubRepo>() {
+            @Override
+            public void onResponse(Call<GithubRepo> call, Response<GithubRepo> response) {
+                Log.i(TAG, "response " + response.code());
+                Log.i(TAG, "response " + response.message());
+                Log.i(TAG, "response " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<GithubRepo> call, Throwable t) {
+                Log.e(TAG, "onFailure", t);
+            }
+        });
+    }
+
+    //刪除
+    public void dynamicdeleteGithubByhPatch() {
+        PostApi postApi = AppClientManager.getClient().create(PostApi.class);
+        postApi.detetDynamicGithubByhPost(account).enqueue(new Callback<GithubRepo>() {
+            @Override
+            public void onResponse(Call<GithubRepo> call, Response<GithubRepo> response) {
+                Log.i(TAG, "response " + response.code()); //204 標示有成功，回傳401可以看一下是不是沒token
                 Log.i(TAG, "response " + response.message());
                 Log.i(TAG, "response " + response.body());
             }
