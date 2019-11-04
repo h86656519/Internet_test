@@ -7,7 +7,6 @@ import android.util.Log;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +16,7 @@ import java.util.concurrent.Executors;
 public class HttpHelper {
     Runnable thread;
 
-    private Response response;
+    private MyResponse myResponse;
 
     public HttpListener getListener() {
         return listener;
@@ -44,8 +43,8 @@ public class HttpHelper {
         this.token = token;
     }
 
-    public Response getResponse() {
-        return response;
+    public MyResponse getMyResponse() {
+        return myResponse;
     }
 
     public void setRequestParellal(boolean isParallel) { //要不要同步request
@@ -71,7 +70,7 @@ public class HttpHelper {
             public void run() {
                 Log.i("suvini", "事情一:跑網路" );
                 try {
-                    final Response response = new Response();
+                    final MyResponse myResponse = new MyResponse();
                     URL url = new URL(path);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setConnectTimeout(timeout);
@@ -84,21 +83,21 @@ public class HttpHelper {
                     message.what = 0x03;
 
                     Log.i("suvini", "getResponseCode : " + conn.getResponseCode());
-                    response.setHttpCode(conn.getResponseCode());
+                    myResponse.setHttpCode(conn.getResponseCode());
                     if (conn.getResponseCode() == 200) {
                         InputStream in = conn.getInputStream();
                         byte[] data = StreamTool.read(in);
                         // String html = new String(data, "UTF-8");
-                        response.setJson(new String(data, "UTF-8"));
+                        myResponse.setJson(new String(data, "UTF-8"));
                         //  Log.i("suviniii", "html : " + html);
 
-                        message.obj = response;
+                        message.obj = myResponse;
                         handler.sendMessage(message);
                     }else if(conn.getResponseCode() == 401){
                         Log.i("suvini", "401 訪問權限不夠，確認一下token");
                     }
-                    response.setErrorMessage(conn.getResponseMessage());
-                    message.obj = response;
+                    myResponse.setErrorMessage(conn.getResponseMessage());
+                    message.obj = myResponse;
                     handler.sendMessage(message);
                 } catch (Exception e) {
 
@@ -113,7 +112,7 @@ public class HttpHelper {
          }
     }
 
-    class Response {
+    class MyResponse {
         private String json;
         private int httpCode; //404, 200
         private String errorMessage; //Wrong url
@@ -142,16 +141,16 @@ public class HttpHelper {
 
 
     public interface HttpListener {
-        public void onSuccess(Response response);
+        public void onSuccess(MyResponse myResponse);
     }
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case 0x003:
-                    response = (Response) msg.obj;
+                    myResponse = (MyResponse) msg.obj;
                     if (listener != null) {
-                        listener.onSuccess(response);
+                        listener.onSuccess(myResponse);
                     }
                     break;
                 default:

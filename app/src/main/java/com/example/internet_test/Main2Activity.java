@@ -1,13 +1,9 @@
 package com.example.internet_test;
 
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main2Activity extends AppCompatActivity {
@@ -26,8 +22,8 @@ public class Main2Activity extends AppCompatActivity {
         HttpHelper httpHelper = HttpHelperFactory.getInstance();
         httpHelper.setListener(new HttpHelper.HttpListener() {
             @Override
-            public void onSuccess(HttpHelper.Response response) {
-                textView.setText(response.getJson());
+            public void onSuccess(HttpHelper.MyResponse myResponse) {
+                textView.setText(myResponse.getJson());
             }
         });
         httpHelper.requestSequence(urls);

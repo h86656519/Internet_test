@@ -3,6 +3,7 @@ package com.example.retrofit;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -34,12 +35,23 @@ public class AppClientManager {
 //        });
 
 //        一般GET請求的話只需要37~42行即可，需要POST請求的話需要再加上23~34行
-        okHttpClient = builder.build();
+
+        /*攔截器的功用，好處 1.在request 途中要 固定的變數 ex: 每次token 都是一樣，就可以寫在攔截器裡面
+                              2.每次接收回來的東西不用印出來，直接在locat 就可以看到
+
+         */
+        okHttpClient = builder
+                .connectTimeout(30, TimeUnit.SECONDS)   // 設置連線Timeout
+                .addInterceptor(new LoggingInterceptor()) //新增攔截器
+                .build(); // 租裝用的，組裝的元件就是上面的 connectTimeout，addInterceptor ..... 
         retrofit = new Retrofit.Builder()
                 .baseUrl(Config.postURL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
+                .client(okHttpClient) // 將okHttpClient加入連線基底
                 .build();
+        //new AlertDialog.Builder()
+        //                .setTitle
+        //                .setMessage
 
     }
 
